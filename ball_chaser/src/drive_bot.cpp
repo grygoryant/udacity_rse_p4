@@ -15,9 +15,9 @@ bool handle_drive_request(ball_chaser::DriveToTargetRequest& req,
 
     motor_command_publisher.publish(motor_command);
     
-    //resp.msg_feedback = "Velocities set - linear_x: " + std::to_string(req.linear_x) +
-    //    " , angular_z: " + std::to_string(req.angular_z);
-    //ROS_INFO_STREAM(resp.msg_feedback);
+    resp.msg_feedback = "Velocities set - linear_x: " + std::to_string(req.linear_x) +
+        " , angular_z: " + std::to_string(req.angular_z);
+    ROS_INFO_STREAM(resp.msg_feedback);
     
     return true;
 }
