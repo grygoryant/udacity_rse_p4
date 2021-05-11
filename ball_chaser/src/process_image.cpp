@@ -8,6 +8,7 @@ ros::ServiceClient client;
 
 static const float vel = 0.5;
 static const std::pair<int, int> center_range(250, 550);
+static const float ball_prox_thrsh = 0.45;
 
 // This function calls the command_robot service to drive the robot in the specified direction
 void drive_robot(float lin_x, float ang_z)
@@ -26,30 +27,38 @@ void process_image_callback(const sensor_msgs::Image img)
 
     int white_pixel = 255;
     bool ball_found = false;
+    bool ball_reached = false;
     uint32_t ball_center_x = 0;
-    std::vector<uint32_t> x;
+    std::vector<uint32_t> x_coords;
 
     for(uint32_t i = 0; i < img.height; ++i)
     {
         for(uint32_t j = 0; j < img.width; ++j)
         {
             const auto& r = img.data[img.step * i + 3 * j];
-	        const auto& g = img.data[img.step * i + 3 * j + 1];
-	        const auto& b = img.data[img.step * i + 3 * j + 2];
-	        if(r == white_pixel && g == white_pixel && b == white_pixel)
-	        {
-	            ball_found = true;
-	            x.push_back(j);
-	        }
+            const auto& g = img.data[img.step * i + 3 * j + 1];
+            const auto& b = img.data[img.step * i + 3 * j + 2];
+            if(r == white_pixel && g == white_pixel && b == white_pixel)
+            {
+                ball_found = true;
+                x_coords.push_back(j);
+            }
         }
     }
     
-    if(!x.empty()) 
+    if(!x_coords.empty()) 
     {
-        ball_center_x = std::accumulate(std::begin(x), std::end(x), 0.0) / x.size();
+        ball_center_x = std::accumulate(std::begin(x_coords),
+            std::end(x_coords), 0.0) / x_coords.size();
+        
+        float ball_prox = static_cast<float>(x_coords.size()) / (img.width * img.height);
+        if(ball_prox > ball_prox_thrsh)
+        {
+            ball_reached = true;
+        }
     }
- 
-    if(!ball_found)
+
+    if(!ball_found || ball_reached)
     {
         drive_robot(.0, .0);
     }
