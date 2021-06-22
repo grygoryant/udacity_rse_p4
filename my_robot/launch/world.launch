@@ -3,18 +3,18 @@
 <launch>
 
   <!-- Robot pose -->
-  <arg name="x" default="-2.85"/>
-  <arg name="y" default="3.36"/>
+  <arg name="x" default="-3.68"/>
+  <arg name="y" default="3.38"/>
   <arg name="z" default="0"/>
   <arg name="roll" default="0"/>
   <arg name="pitch" default="0"/>
-  <arg name="yaw" default="-3.1415"/>
+  <arg name="yaw" default="-1.57"/>
 
   <!-- Launch other relevant files-->
   <include file="$(find my_robot)/launch/robot_description.launch"/>
 
   <!-- World File -->
-  <arg name="world_file" default="$(find my_robot)/worlds/my_world.world"/>
+  <arg name="world_file" default="$(find my_robot)/worlds/new_world.world"/>
 
   <!-- Launch Gazebo World -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
